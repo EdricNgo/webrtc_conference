@@ -39,15 +39,7 @@ class ChatContainer extends PureComponent {
   }
 
   render() {
-    const {
-      children,
-      unmounting,
-    } = this.props;
-
-    if (unmounting === true) {
-      return null;
-    }
-
+    const { children } = this.props;
     return (
       <Chat {...this.props}>
         {children}
@@ -57,7 +49,7 @@ class ChatContainer extends PureComponent {
 }
 
 export default injectIntl(withTracker(({ intl }) => {
-  const chatID = Session.get('idChatOpen');
+  const chatID = Session.get('idChatOpen') || PUBLIC_CHAT_KEY;
   let messages = [];
   let isChatLocked = ChatService.isChatLocked(chatID);
   let title = intl.formatMessage(intlMessages.titlePublic);
@@ -117,7 +109,7 @@ export default injectIntl(withTracker(({ intl }) => {
       .concat(messagesAfterWelcomeMsg);
 
     messages = messagesFormated.sort((a, b) => (a.time - b.time));
-  } else if (chatID) {
+  } else {
     messages = ChatService.getPrivateGroupMessages();
 
     const receiverUser = ChatService.getUser(chatID);
@@ -143,11 +135,6 @@ export default injectIntl(withTracker(({ intl }) => {
       messages.push(messagePartnerLoggedOut);
       isChatLocked = true;
     }
-  } else {
-    // No chatID is set so the panel is closed, about to close, or wasn't opened correctly
-    return {
-      unmounting: true,
-    };
   }
 
   messages = messages.map((message) => {

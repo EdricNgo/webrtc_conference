@@ -1,19 +1,17 @@
 import WhiteboardMultiUser from '/imports/api/whiteboard-multi-user/';
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 import Logger from '/imports/startup/server/logger';
-import { extractCredentials } from '/imports/api/common/server/helpers';
 
-function whiteboardMultiUser() {
-  if (!this.userId) {
-    return WhiteboardMultiUser.find({ meetingId: '' });
-  }
-  const { meetingId, requesterUserId } = extractCredentials(this.userId);
+function whiteboardMultiUser(credentials) {
+  const { meetingId, requesterUserId, requesterToken } = credentials;
 
-  Logger.debug(`Publishing whiteboard-multi-user for ${meetingId} ${requesterUserId}`);
+  check(meetingId, String);
+
+  Logger.debug(`Publishing whiteboard-multi-user for ${meetingId} ${requesterUserId} ${requesterToken}`);
 
   return WhiteboardMultiUser.find({ meetingId });
 }
-
 
 function publish(...args) {
   const boundMultiUser = whiteboardMultiUser.bind(this);

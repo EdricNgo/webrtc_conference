@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import cx from 'classnames';
 import { defineMessages } from 'react-intl';
 import Icon from '/imports/ui/components/icon/component';
 import NoteService from '/imports/ui/components/note/service';
-import { styles } from '/imports/ui/components/user-list/user-list-content/styles';
+import { styles } from './styles';
 
 const propTypes = {
   intl: PropTypes.shape({
@@ -14,11 +15,11 @@ const propTypes = {
 };
 
 const intlMessages = defineMessages({
-  title: {
+  notesTitle: {
     id: 'app.userList.notesTitle',
     description: 'Title for the notes list',
   },
-  sharedNotes: {
+  title: {
     id: 'app.note.title',
     description: 'Title for the shared notes',
   },
@@ -58,18 +59,33 @@ class UserNotes extends Component {
     }
   }
 
-  renderNotes() {
-    const { intl } = this.props;
+  render() {
+    const { intl, isPanelOpened } = this.props;
     const { unread } = this.state;
+
+    if (!NoteService.isEnabled()) return null;
+
+    const toggleNotePanel = () => {
+      Session.set(
+        'openPanel',
+        isPanelOpened
+          ? 'userlist'
+          : 'note',
+      );
+    };
+
+    const linkClasses = {};
+    linkClasses[styles.active] = isPanelOpened;
+
 
     let notification = null;
     if (unread) {
       notification = (
         <div
-          className={styles.unreadMessages}
+          className={styles.unreadContent}
           aria-label={intl.formatMessage(intlMessages.unreadContent)}
         >
-          <div className={styles.unreadMessagesText} aria-hidden="true">
+          <div className={styles.unreadContentText} aria-hidden="true">
             ···
           </div>
         </div>
@@ -77,34 +93,22 @@ class UserNotes extends Component {
     }
 
     return (
-      <div
-        role="button"
-        tabIndex={0}
-        className={styles.listItem}
-        onClick={NoteService.toggleNotePanel}
-      >
-        <Icon iconName="copy" />
-        <span aria-hidden>{intl.formatMessage(intlMessages.sharedNotes)}</span>
-        {notification}
-      </div>
-    );
-  }
-
-  render() {
-    const { intl } = this.props;
-
-    if (!NoteService.isEnabled()) return null;
-
-    return (
       <div className={styles.messages}>
-        <div className={styles.container}>
+        {
           <h2 className={styles.smallTitle}>
-            {intl.formatMessage(intlMessages.title)}
+            {intl.formatMessage(intlMessages.notesTitle)}
           </h2>
-        </div>
+        }
         <div className={styles.scrollableList}>
-          <div className={styles.list}>
-            {this.renderNotes()}
+          <div
+            role="button"
+            tabIndex={0}
+            className={cx(styles.noteLink, linkClasses)}
+            onClick={toggleNotePanel}
+          >
+            <Icon iconName="copy" />
+            <span>{intl.formatMessage(intlMessages.title)}</span>
+            {notification}
           </div>
         </div>
       </div>

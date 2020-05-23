@@ -6,7 +6,6 @@ import { setCustomLogoUrl } from '/imports/ui/components/user-list/service';
 import { makeCall } from '/imports/ui/services/api';
 import logger from '/imports/startup/client/logger';
 import LoadingScreen from '/imports/ui/components/loading-screen/component';
-import Users from '/imports/api/users';
 
 const propTypes = {
   children: PropTypes.element.isRequired,
@@ -141,11 +140,13 @@ class JoinHandler extends Component {
     };
 
     const setCustomData = (resp) => {
-      const { customdata } = resp;
+      const {
+        meetingID, internalUserID, customdata,
+      } = resp;
 
       return new Promise((resolve) => {
         if (customdata.length) {
-          makeCall('addUserSettings', customdata).then(r => resolve(r));
+          makeCall('addUserSettings', meetingID, internalUserID, customdata).then(r => resolve(r));
         }
         resolve(true);
       });
@@ -171,14 +172,7 @@ class JoinHandler extends Component {
       setLogoURL(response);
       logUserInfo();
 
-      Tracker.autorun(async (cd) => {
-        const user = Users.findOne({ userId: Auth.userID, authed: true }, { fields: { _id: 1 } });
-
-        if (user) {
-          await setCustomData(response);
-          cd.stop();
-        }
-      });
+      await setCustomData(response);
 
       logger.info({
         logCode: 'joinhandler_component_joinroutehandler_success',

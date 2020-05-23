@@ -159,13 +159,11 @@ class WebcamDraggable extends PureComponent {
     const { webcamDraggableState } = this.props;
     const { optimalGrid, placement } = webcamDraggableState;
     if (placement === 'top' || placement === 'bottom') {
-      const mediaSelection = document.querySelector('section[class^=media]');
-      const mediaHeight = mediaSelection ? mediaSelection.offsetHeight : 0;
+      const mediaHeight = $('section[class^=media]').height();
       this.setState({ placementPercent: (optimalGrid.height * 100) / mediaHeight });
     }
     if (placement === 'left' || placement === 'right') {
-      const mediaSelection = document.querySelector('section[class^=media]');
-      const mediaWidth = mediaSelection ? mediaSelection.offsetWidth : 0;
+      const mediaWidth = $('section[class^=media]').width();
       this.setState({ placementPercent: (optimalGrid.width * 100) / mediaWidth });
     }
   }
@@ -443,9 +441,8 @@ class WebcamDraggable extends PureComponent {
       [styles.dropZoneBgRight]: true,
     });
 
-    const mediaSelection = document.querySelector('section[class^=media]');
-    const mHeight = mediaSelection ? mediaSelection.offsetHeight : 0;
-    const mWidth = mediaSelection ? mediaSelection.offsetWidth : 0;
+    const mHeight = $('section[class^=media]').height();
+    const mWidth = $('section[class^=media]').width();
 
     let resizeWidth;
     let resizeHeight;

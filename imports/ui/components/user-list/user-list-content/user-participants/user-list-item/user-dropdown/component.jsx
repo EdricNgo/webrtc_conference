@@ -99,10 +99,6 @@ const messages = defineMessages({
     id: 'app.userList.menu.directoryLookup.label',
     description: 'Directory lookup',
   },
-  handAlertLabel: {
-    id: 'app.userList.handAlert',
-    description: 'text displayed in raise hand toast',
-  },
 });
 
 const propTypes = {
@@ -118,7 +114,6 @@ const propTypes = {
 };
 const CHAT_ENABLED = Meteor.settings.public.chat.enabled;
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
-const MAX_ALERT_RANGE = 550;
 
 class UserDropdown extends PureComponent {
   /**
@@ -142,8 +137,6 @@ class UserDropdown extends PureComponent {
       dropdownVisible: false,
       showNestedOptions: false,
     };
-
-    this.audio = new Audio(`${Meteor.settings.public.app.cdn + Meteor.settings.public.app.basename}/resources/sounds/bbb-handRaise.mp3`);
 
     this.handleScroll = this.handleScroll.bind(this);
     this.onActionsShow = this.onActionsShow.bind(this);
@@ -301,7 +294,7 @@ class UserDropdown extends PureComponent {
       ));
     }
 
-    if (CHAT_ENABLED && enablePrivateChat && !meetingIsBreakout && isMeteorConnected) {
+    if (CHAT_ENABLED && enablePrivateChat && isMeteorConnected) {
       actions.push(this.makeDropdownItem(
         'activeChat',
         intl.formatMessage(messages.ChatLabel),
@@ -352,6 +345,15 @@ class UserDropdown extends PureComponent {
       ));
     }
 
+    if (allowedToRemove && isMeteorConnected) {
+      actions.push(this.makeDropdownItem(
+        'remove',
+        intl.formatMessage(messages.RemoveUserLabel, { 0: user.name }),
+        () => this.onActionsHide(removeUser(user.userId)),
+        'circle_close',
+      ));
+    }
+
     if (allowedToPromote && isMeteorConnected) {
       actions.push(this.makeDropdownItem(
         'promote',
@@ -387,15 +389,6 @@ class UserDropdown extends PureComponent {
         intl.formatMessage(messages.DirectoryLookupLabel),
         () => this.onActionsHide(requestUserInformation(user.extId)),
         'user',
-      ));
-    }
-
-    if (allowedToRemove && isMeteorConnected) {
-      actions.push(this.makeDropdownItem(
-        'remove',
-        intl.formatMessage(messages.RemoveUserLabel, { 0: user.name }),
-        () => this.onActionsHide(removeUser(user.userId)),
-        'circle_close',
       ));
     }
 
@@ -487,17 +480,12 @@ class UserDropdown extends PureComponent {
 
   renderUserAvatar() {
     const {
-      intl,
       normalizeEmojiName,
       user,
-      currentUser,
       userInBreakout,
       breakoutSequence,
       meetingIsBreakout,
       voiceUser,
-      notify,
-      raiseHandAudioAlert,
-      raiseHandPushAlert,
     } = this.props;
 
     const { clientType } = user;
@@ -509,18 +497,6 @@ class UserDropdown extends PureComponent {
 
     const iconVoiceOnlyUser = (<Icon iconName="audio_on" />);
     const userIcon = isVoiceOnly ? iconVoiceOnlyUser : iconUser;
-    const shouldAlert = user.emoji === 'raiseHand'
-      && currentUser.userId !== user.userId
-      && new Date() - user.emojiTime < MAX_ALERT_RANGE;
-
-    if (shouldAlert) {
-      if (raiseHandAudioAlert) this.audio.play();
-      if (raiseHandPushAlert) {
-        notify(
-          `${user.name} ${intl.formatMessage(messages.handAlertLabel)}`, 'info', 'hand',
-        );
-      }
-    }
 
     return (
       <UserAvatar

@@ -91,13 +91,10 @@ const CHAT_ENABLED = CHAT_CONFIG.enabled;
 
 const ShortcutHelpComponent = (props) => {
   const { intl, shortcuts } = props;
-  const { name, os } = browser();
+  const { name } = browser();
 
   let accessMod = null;
 
-  // different browsers use different access modifier keys
-  // on different systems when using accessKey property.
-  // Overview how different browsers behave: https://www.w3schools.com/jsref/prop_html_accesskey.asp
   switch (name) {
     case 'chrome':
     case 'edge':
@@ -113,11 +110,6 @@ const ShortcutHelpComponent = (props) => {
       break;
     default:
       break;
-  }
-
-  // all Browsers on MacOS are using Control + Option as access modifier
-  if (os.includes('OS X 10')) {
-    accessMod = 'Control + Option';
   }
 
   const shortcutItems = shortcuts.map((shortcut) => {

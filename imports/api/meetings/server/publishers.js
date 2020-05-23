@@ -1,18 +1,19 @@
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 import Meetings, { RecordMeetings, MeetingTimeRemaining } from '/imports/api/meetings';
 import Users from '/imports/api/users';
 import Logger from '/imports/startup/server/logger';
-import { extractCredentials } from '/imports/api/common/server/helpers';
 
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
 
-function meetings(isModerator = false) {
-  if (!this.userId) {
-    return Meetings.find({ meetingId: '' });
-  }
-  const { meetingId, requesterUserId } = extractCredentials(this.userId);
+function meetings(credentials, isModerator = false) {
+  const { meetingId, requesterUserId, requesterToken } = credentials;
 
-  Logger.debug(`Publishing meeting =${meetingId} ${requesterUserId}`);
+  check(meetingId, String);
+  check(requesterUserId, String);
+  check(requesterToken, String);
+
+  Logger.debug(`Publishing meeting =${meetingId} ${requesterUserId} ${requesterToken}`);
 
   const selector = {
     $or: [
@@ -21,7 +22,7 @@ function meetings(isModerator = false) {
   };
 
   if (isModerator) {
-    const User = Users.findOne({ userId: requesterUserId, meetingId });
+    const User = Users.findOne({ userId: requesterUserId });
     if (!!User && User.role === ROLE_MODERATOR) {
       selector.$or.push({
         'meetingProp.isBreakout': true,
@@ -46,11 +47,11 @@ function publish(...args) {
 
 Meteor.publish('meetings', publish);
 
-function recordMeetings() {
-  if (!this.userId) {
-    return RecordMeetings.find({ meetingId: '' });
-  }
-  const { meetingId } = extractCredentials(this.userId);
+function recordMeetings(credentials) {
+  const { meetingId, requesterUserId, requesterToken } = credentials;
+  check(meetingId, String);
+  check(requesterUserId, String);
+  check(requesterToken, String);
 
   return RecordMeetings.find({ meetingId });
 }
@@ -61,11 +62,11 @@ function recordPublish(...args) {
 
 Meteor.publish('record-meetings', recordPublish);
 
-function meetingTimeRemaining() {
-  if (!this.userId) {
-    return MeetingTimeRemaining.find({ meetingId: '' });
-  }
-  const { meetingId } = extractCredentials(this.userId);
+function meetingTimeRemaining(credentials) {
+  const { meetingId, requesterUserId, requesterToken } = credentials;
+  check(meetingId, String);
+  check(requesterUserId, String);
+  check(requesterToken, String);
 
   return MeetingTimeRemaining.find({ meetingId });
 }

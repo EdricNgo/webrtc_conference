@@ -3,7 +3,6 @@ import PresentationUploadToken from '/imports/api/presentation-upload-token';
 import Auth from '/imports/ui/services/auth';
 import Poll from '/imports/api/polls/';
 import { makeCall } from '/imports/ui/services/api';
-import logger from '/imports/startup/client/logger';
 import _ from 'lodash';
 
 const CONVERSION_TIMEOUT = 300000;
@@ -114,7 +113,7 @@ const requestPresentationUploadToken = (
 
   Tracker.autorun((c) => {
     computation = c;
-    const sub = Meteor.subscribe('presentation-upload-token', podId, filename);
+    const sub = Meteor.subscribe('presentation-upload-token', Auth.credentials, podId, filename);
     if (!sub.ready()) return;
 
     const PresentationToken = PresentationUploadToken.findOne({
@@ -172,12 +171,7 @@ const uploadAndConvertPresentation = (
     .then(() => observePresentationConversion(meetingId, file.name, onConversion))
     // Trap the error so we can have parallel upload
     .catch((error) => {
-      logger.debug({
-        logCode: 'presentation_uploader_service',
-        extraInfo: {
-          error,
-        },
-      }, 'Generic presentation upload exception catcher');
+      console.error(error);
       onUpload({ error: true, done: true, status: error.code });
       return Promise.resolve();
     });

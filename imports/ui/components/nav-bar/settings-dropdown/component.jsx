@@ -228,7 +228,6 @@ class SettingsDropdown extends PureComponent {
       (<DropdownListItem
         key="list-item-settings"
         icon="settings"
-        data-test="settings"
         label={intl.formatMessage(intlMessages.settingsLabel)}
         description={intl.formatMessage(intlMessages.settingsDesc)}
         onClick={() => mountModal(<SettingsMenuContainer />)}

@@ -159,15 +159,6 @@ const sortChatsByIcon = (a, b) => {
   return 0;
 };
 
-const sortByRecentActivity = (a, b) => {
-  const _a = a.lastActivity;
-  const _b = b.lastActivity;
-  if (a.userId === 'public') return -1;
-  if (!_b || _a > _b) return -1;
-  if (!_a || _a < _b) return 1;
-  return 0;
-};
-
 const isPublicChat = chat => (
   chat.userId === 'public'
 );
@@ -179,7 +170,7 @@ const sortChats = (a, b) => {
     sort = sortChatsByName(a, b);
   }
 
-  return sort = sortByRecentActivity(a, b);
+  return sort;
 };
 
 const userFindSorting = {
@@ -232,15 +223,8 @@ const getActiveChats = (chatID) => {
 
   let activeChats = GroupChatMsg
     .find(filter)
-    .fetch();
-
-  const idsWithTimeStamp = {};
-
-  activeChats.map((chat) => {
-    idsWithTimeStamp[`${chat.sender}`] = chat.timestamp;
-  });
-
-  activeChats = activeChats.map(mapActiveChats);
+    .fetch()
+    .map(mapActiveChats);
 
   if (chatID) {
     activeChats.push(chatID);
@@ -255,7 +239,6 @@ const getActiveChats = (chatID) => {
       activeChat.unreadCounter = UnreadMessages.count(op.userId);
       activeChat.name = op.name;
       activeChat.isModerator = op.role === ROLE_MODERATOR;
-      activeChat.lastActivity = idsWithTimeStamp[`${op.userId}`];
       return activeChat;
     });
 

@@ -1,13 +1,16 @@
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 import RedisPubSub from '/imports/startup/server/redis';
-import { extractCredentials } from '/imports/api/common/server/helpers';
 
-export default function requestJoinURL({ breakoutId, userId: userIdToInvite }) {
+export default function requestJoinURL(credentials, { breakoutId, userId: userIdToInvite }) {
   const REDIS_CONFIG = Meteor.settings.private.redis;
   const CHANNEL = REDIS_CONFIG.channels.toAkkaApps;
 
-  const { meetingId, requesterUserId } = extractCredentials(this.userId);
+  const { meetingId, requesterUserId, requesterToken } = credentials;
 
+  check(meetingId, String);
+  check(requesterUserId, String);
+  check(requesterToken, String);
   const userId = userIdToInvite || requesterUserId;
   const eventName = 'RequestBreakoutJoinURLReqMsg';
 

@@ -53,11 +53,13 @@ class UserInfoComponent extends Component {
   }
 
   render() {
-    const { intl } = this.props;
+    const {
+      intl, meetingId, requesterUserId,
+    } = this.props;
     return (
       <Modal
         title={intl.formatMessage(intlMessages.title)}
-        onRequestClose={() => Service.handleCloseUserInfo()}
+        onRequestClose={() => Service.handleCloseUserInfo(meetingId, requesterUserId)}
       >
         {this.renderUserInfo()}
       </Modal>

@@ -10,7 +10,7 @@ import { styles } from './styles';
 const intlMessages = defineMessages({
   500: {
     id: 'app.error.500',
-    defaultMessage: 'Oops, something went wrong',
+    defaultMessage: 'Ops, something went wrong',
   },
   410: {
     id: 'app.error.410',

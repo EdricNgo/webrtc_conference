@@ -1,19 +1,20 @@
 import { GroupChatMsg, UsersTyping } from '/imports/api/group-chat-msg';
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 
 import Logger from '/imports/startup/server/logger';
-import { extractCredentials } from '/imports/api/common/server/helpers';
 
-function groupChatMsg(chatsIds) {
-  if (!this.userId) {
-    return GroupChatMsg.find({ meetingId: '' });
-  }
-  const { meetingId, requesterUserId } = extractCredentials(this.userId);
+function groupChatMsg(credentials, chatsIds) {
+  const { meetingId, requesterUserId, requesterToken } = credentials;
+
+  check(meetingId, String);
+  check(requesterUserId, String);
+  check(requesterToken, String);
 
   const CHAT_CONFIG = Meteor.settings.public.chat;
   const PUBLIC_GROUP_CHAT_ID = CHAT_CONFIG.public_group_id;
 
-  Logger.debug(`Publishing group-chat-msg for ${meetingId} ${requesterUserId}`);
+  Logger.debug(`Publishing group-chat-msg for ${meetingId} ${requesterUserId} ${requesterToken}`);
 
   return GroupChatMsg.find({
     $or: [
@@ -30,14 +31,12 @@ function publish(...args) {
 
 Meteor.publish('group-chat-msg', publish);
 
-function usersTyping() {
-  if (!this.userId) {
-    return UsersTyping.find({ meetingId: '' });
-  }
+function usersTyping(credentials) {
+  const { meetingId, requesterUserId, requesterToken } = credentials;
 
-  const { meetingId, requesterUserId } = extractCredentials(this.userId);
-
-  Logger.debug(`Publishing users-typing for ${meetingId} ${requesterUserId}`);
+  check(meetingId, String);
+  check(requesterUserId, String);
+  check(requesterToken, String);
 
   return UsersTyping.find({ meetingId });
 }

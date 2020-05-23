@@ -120,7 +120,7 @@
 
 .spacer {
   &:before {
-    content: "\00a0"; // non-breaking space
+    content: none;
   }
 }
 
