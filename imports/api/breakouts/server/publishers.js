@@ -6,7 +6,7 @@ import { extractCredentials } from '/imports/api/common/server/helpers';
 
 const ROLE_MODERATOR = Meteor.settings.public.user.role_moderator;
 
-function breakouts() {
+function breakouts(moderator = false) {
   if (!this.userId) {
     return Breakouts.find({ meetingId: '' });
   }
@@ -14,16 +14,18 @@ function breakouts() {
   const { meetingId, requesterUserId } = extractCredentials(this.userId);
   Logger.debug(`Publishing Breakouts for ${meetingId} ${requesterUserId}`);
 
-  const User = Users.findOne({ userId: requesterUserId, meetingId }, { fields: { role: 1 } });
-  if (!!User && User.role === ROLE_MODERATOR) {
-    const presenterSelector = {
-      $or: [
-        { parentMeetingId: meetingId },
-        { breakoutId: meetingId },
-      ],
-    };
+  if (moderator) {
+    const User = Users.findOne({ userId: requesterUserId, meetingId });
+    if (!!User && User.role === ROLE_MODERATOR) {
+      const presenterSelector = {
+        $or: [
+          { parentMeetingId: meetingId },
+          { breakoutId: meetingId },
+        ],
+      };
 
-    return Breakouts.find(presenterSelector);
+      return Breakouts.find(presenterSelector);
+    }
   }
 
   const selector = {

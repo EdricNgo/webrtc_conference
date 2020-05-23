@@ -2,36 +2,36 @@ public:
   app:
     mobileFontSize: 16px
     desktopFontSize: 14px
-    audioChatNotification: true
+    audioChatNotification: false
     autoJoin: true
     listenOnlyMode: true
     forceListenOnly: false
     skipCheck: false
-    clientTitle: VMeeting
-    appName: VMeeting
+    clientTitle: BigBlueButton
+    appName: BigBlueButton HTML5 Client
     bbbServerVersion: 2.2
-    copyright: "©2020 VNG Cloud."
-    html5ClientBuild: 894
-    helpLink: https://meet-dev.vngcloud.vn/vmeeting/faq
+    copyright: "©2019 BigBlueButton Inc."
+    html5ClientBuild: HTML5_CLIENT_VERSION
+    helpLink: https://bigbluebutton.org/html5/
     lockOnJoin: true
     cdn: ""
     basename: "/html5client"
     askForFeedbackOnLogout: false
     allowUserLookup: false
-    enableNetworkInformation: true
+    enableNetworkInformation: false
     enableLimitOfViewersInWebcam: false
     enableTalkingIndicator: true
-    viewersInWebcam: 2
+    viewersInWebcam: 8
     ipv4FallbackDomain: ""
     allowLogout: true
     allowFullscreen: true
     defaultSettings:
       application:
         animations: true
-        chatAudioAlerts: true
-        chatPushAlerts: true
-        userJoinAudioAlerts: true
-        userJoinPushAlerts: true
+        chatAudioAlerts: false
+        chatPushAlerts: false
+        userJoinAudioAlerts: false
+        userJoinPushAlerts: false
         fallbackLocale: en
         overrideLocale: null
       audio:
@@ -76,63 +76,47 @@ public:
     connectionTimeout: 60000
     showHelpButton: true
     effectiveConnection:
-    - critical
-    - danger
-    - warning
-    - good
-    badConnection:
-    - critical
-    - danger
-    - warning
+      - critical
+      - danger
+      - warning
   externalVideoPlayer:
     enabled: true
   networkMonitoring:
-    enableNetworkMonitoring: true
+    enableNetworkMonitoring: false
     packetLostThreshold: 10
   kurento:
-    wsUrl: wss://meet-dev.vngcloud.vn/bbb-webrtc-sfu
+    wsUrl: HOST
     chromeDefaultExtensionKey: akgoaoikmbmhcopjgakkcepdgdgkjfbc
     chromeDefaultExtensionLink: https://chrome.google.com/webstore/detail/bigbluebutton-screenshare/akgoaoikmbmhcopjgakkcepdgdgkjfbc
     chromeExtensionKey: KEY
     chromeExtensionLink: LINK
-    screenshare:
-      constraints:
-        video:
-          frameRate:
-            ideal: 5
-            max: 10
-          width:
-            max: 2560
-          height:
-            max: 1600
-        audio: false
     chromeScreenshareSources:
     - window
     - screen
     firefoxScreenshareSource: window
     cameraProfiles:
-    - id: low
-      name: Low quality
-      default: false
-      bitrate: 100
-    - id: medium
-      name: Medium quality
-      default: true
-      bitrate: 200
-    - id: high
-      name: High quality
-      default: false
-      bitrate: 500
-    - id: hd
-      name: High definition
-      default: false
-      bitrate: 800
+      - id: low
+        name: Low quality
+        default: false
+        bitrate: 100
+      - id: medium
+        name: Medium quality
+        default: true
+        bitrate: 200
+      - id: high
+        name: High quality
+        default: false
+        bitrate: 500
+      - id: hd
+        name: High definition
+        default: false
+        bitrate: 800
     enableScreensharing: true
     enableVideo: true
-    enableVideoStats: true
+    enableVideoStats: false
     enableVideoMenu: true
     enableListenOnly: true
-    autoShareWebcam: true
+    autoShareWebcam: false
     skipVideoPreview: false
   pingPong:
     clearUsersInSeconds: 180
@@ -173,8 +157,8 @@ public:
     typingIndicator:
       enabled: true
   note:
-    enabled: true
-    url: https://meet-dev.vngcloud.vn/pad
+    enabled: false
+    url: ETHERPAD_HOST
     config:
       showLineNumbers: false
       showChat: false
@@ -182,12 +166,10 @@ public:
       showControls: true
       rtl: false
   layout:
-    autoSwapLayout: true
+    autoSwapLayout: false
     hidePresentation: false
   media:
     stunTurnServersFetchAddress: "/bigbluebutton/api/stuns"
-    cacheStunTurnServers: true
-    fallbackStunServer:  ''
     mediaTag: "#remote-media"
     callTransferTimeout: 5000
     callHangupTimeout: 2000
@@ -321,10 +303,9 @@ public:
       - pencil
       - hand
   clientLog:
-    server: {enabled: true, level: info}
-    console: {enabled: true, level: debug}
-    external: {enabled: false, level: info, url: 'https://LOG_HOST/html5Log', method: POST,
-      throttleInterval: 400, flushOnClose: true, logTag: ""}
+    server: { enabled: true, level: info }
+    console: { enabled: true, level: debug }
+    external: { enabled: false, level: info, url: https://LOG_HOST/html5Log, method: POST, throttleInterval: 400, flushOnClose: true, logTag: "" }
 private:
   app:
     host: 127.0.0.1
@@ -333,7 +314,7 @@ private:
     pencilChunkLength: 100
     loadSlidesFromHttpAlways: false
   etherpad:
-    apikey: fGwRYFZrWnoqj3zaBoaIuj5PCRQTH3m6wqNg1HyxvJMvfM9A2hvtxPtC8iUyIbU5
+    apikey: ETHERPAD_APIKEY
     version: 1.2.13
     host: 127.0.0.1
     port: 9001
@@ -361,16 +342,16 @@ private:
     streamerLog: false
   memoryMonitoring:
     stat:
-      enabled: true
+      enabled: false
     leak:
-      enabled: true
+      enabled: false
     heapdump:
-      enabled: true
+      enabled: false
   minBrowserVersions:
     - browser: chrome
       version: 59
     - browser: chromeMobileIOS
-      version: 59
+      version: Infinity
     - browser: firefox
       version: 52
     - browser: firefoxMobile

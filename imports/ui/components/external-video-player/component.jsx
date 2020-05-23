@@ -171,7 +171,7 @@ class VideoPlayer extends Component {
       const messageDelay = (msg === 'play' || msg === 'stop') ? THROTTLE_INTERVAL_SECONDS : 0;
 
       this.throttleTimeout = setTimeout(() => {
-        sendMessage(msg, { ...params });
+        sendMessage(msg, { ...params, timestamp });
       }, messageDelay*1000);
 
       this.lastMessage = msg;
@@ -201,7 +201,7 @@ class VideoPlayer extends Component {
 
   getCurrentTime() {
     if (this.player && this.player.getCurrentTime) {
-      return Math.round(this.player.getCurrentTime());
+      return this.player.getCurrentTime();
     }
   }
 
@@ -267,25 +267,25 @@ class VideoPlayer extends Component {
       }, SYNC_INTERVAL_SECONDS * 1000);
 
     } else {
-      onMessage('play', ({ time }) => {
+      onMessage('play', ({ time, timestamp }) => {
         const { hasPlayedBefore, player } = this;
 
         if (!player || !hasPlayedBefore) {
           return;
         }
-        this.seekTo(time);
+        this.seekTo(time, timestamp);
         this.setState({ playing: true });
 
         logger.debug({ logCode: 'external_video_client_play' }, 'Play external video');
       });
 
-      onMessage('stop', ({ time }) => {
+      onMessage('stop', ({ time, timestamp }) => {
         const { hasPlayedBefore, player } = this;
 
         if (!player || !hasPlayedBefore) {
           return;
         }
-        this.seekTo(time);
+        this.seekTo(time, timestamp);
         this.setState({ playing: false });
 
         logger.debug({ logCode: 'external_video_client_stop' }, 'Stop external video');
@@ -304,7 +304,7 @@ class VideoPlayer extends Component {
       onMessage('playerUpdate', (data) => {
         const { hasPlayedBefore, player } = this;
         const { playing } = this.state;
-        const { time, rate, state } = data;
+        const { time, timestamp, rate, state } = data;
 
         if (!player || !hasPlayedBefore) {
           return;
@@ -320,7 +320,7 @@ class VideoPlayer extends Component {
           }, 'Change external video playback rate.');
         }
 
-        this.seekTo(time);
+        this.seekTo(time, timestamp);
 
         if (playing !== state) {
           this.setState({ playing: state });
@@ -329,20 +329,32 @@ class VideoPlayer extends Component {
     }
   }
 
-  seekTo(time) {
+  seekTo(time, timestamp) {
     const { player } = this;
 
     if (!player) {
       return logger.error("No player on seek");
     }
 
+    const curTimestamp = Date.now();
+    const timestampDiff = (curTimestamp - timestamp)/1000;
+    const realTime = time + timestampDiff;
+
+    // Ignore seek commands that arrived too late
+    if (timestampDiff > SYNC_INTERVAL_SECONDS) {
+      logger.debug({
+        logCode: 'external_video_client_message_too_late',
+        extraInfo: { time, timestamp, },
+      }, 'Not seeking because message came too late');
+      return;
+    }
 
     // Seek if viewer has drifted too far away from presenter
-    if (Math.abs(this.getCurrentTime() - time) > SYNC_INTERVAL_SECONDS*0.75) {
-      player.seekTo(time, true);
+    if (Math.abs(this.getCurrentTime() - realTime) > SYNC_INTERVAL_SECONDS*0.75) {
+      player.seekTo(realTime, true);
       logger.debug({
         logCode: 'external_video_client_update_seek',
-        extraInfo: { time, },
+        extraInfo: { time, timestamp, },
       }, `Seek external video to: ${time}`);
     }
   }

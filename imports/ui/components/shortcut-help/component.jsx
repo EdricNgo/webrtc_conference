@@ -32,43 +32,43 @@ const intlMessages = defineMessages({
     id: 'app.shortcut-help.functionLabel',
     description: 'heading for shortcut function column',
   },
-  openoptions: {
+  openOptions: {
     id: 'app.shortcut-help.openOptions',
     description: 'describes the open options shortcut',
   },
-  toggleuserlist: {
+  toggleUserList: {
     id: 'app.shortcut-help.toggleUserList',
     description: 'describes the toggle userlist shortcut',
   },
-  togglemute: {
+  toggleMute: {
     id: 'app.shortcut-help.toggleMute',
     description: 'describes the toggle mute shortcut',
   },
-  togglepublicchat: {
+  togglePublicChat: {
     id: 'app.shortcut-help.togglePublicChat',
     description: 'describes the toggle public chat shortcut',
   },
-  hideprivatechat: {
+  hidePrivateChat: {
     id: 'app.shortcut-help.hidePrivateChat',
     description: 'describes the hide public chat shortcut',
   },
-  closeprivatechat: {
+  closePrivateChat: {
     id: 'app.shortcut-help.closePrivateChat',
     description: 'describes the close private chat shortcut',
   },
-  openactions: {
+  openActions: {
     id: 'app.shortcut-help.openActions',
     description: 'describes the open actions shortcut',
   },
-  openstatus: {
+  openStatus: {
     id: 'app.shortcut-help.openStatus',
     description: 'describes the open status shortcut',
   },
-  joinaudio: {
+  joinAudio: {
     id: 'app.audio.joinAudio',
     description: 'describes the join audio shortcut',
   },
-  leaveaudio: {
+  leaveAudio: {
     id: 'app.audio.leaveAudio',
     description: 'describes the leave audio shortcut',
   },
@@ -122,10 +122,11 @@ const ShortcutHelpComponent = (props) => {
 
   const shortcutItems = shortcuts.map((shortcut) => {
     if (!CHAT_ENABLED && shortcut.descId.indexOf('Chat') !== -1) return null;
+
     return (
       <tr key={_.uniqueId('hotkey-item-')}>
         <td className={styles.keyCell}>{`${accessMod} + ${shortcut.accesskey}`}</td>
-        <td className={styles.descCell}>{`${intl.formatMessage(intlMessages[`${shortcut.descId.toLowerCase()}`])}`}</td>
+        <td className={styles.descCell}>{intl.formatMessage(intlMessages[`${shortcut.descId}`])}</td>
       </tr>
     );
   });

@@ -1,6 +1,5 @@
 import Screenshare from '/imports/api/screenshare';
 import KurentoBridge from '/imports/api/screenshare/client/bridge';
-import BridgeService from '/imports/api/screenshare/client/bridge/service';
 import Settings from '/imports/ui/services/settings';
 import logger from '/imports/startup/client/logger';
 import { tryGenerateIceCandidates } from '/imports/utils/safari-webrtc';
@@ -57,9 +56,7 @@ const shareScreen = (onFail) => {
     stopWatching();
   }
 
-  BridgeService.getScreenStream().then(stream => {
-    KurentoBridge.kurentoShareScreen(onFail, stream);
-  }).catch(onFail);
+  KurentoBridge.kurentoShareScreen(onFail);
 };
 
 const screenShareEndAlert = () => new Audio(`${Meteor.settings.public.app.cdn + Meteor.settings.public.app.basename}/resources/sounds/ScreenshareOff.mp3`).play();

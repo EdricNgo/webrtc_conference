@@ -15,7 +15,6 @@ export default withTracker(() => ({
     fields: {
       userId: 1,
       role: 1,
-      guest: 1,
       locked: 1,
       presenter: 1,
     },

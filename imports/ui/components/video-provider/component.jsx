@@ -3,10 +3,7 @@ import { defineMessages, injectIntl } from 'react-intl';
 import { Session } from 'meteor/session';
 import { notify } from '/imports/ui/services/notification';
 import VisibilityEvent from '/imports/utils/visibilityEvent';
-import {
-  fetchWebRTCMappedStunTurnServers,
-  getMappedFallbackStun,
-} from '/imports/utils/fetchStunTurnServers';
+import { fetchWebRTCMappedStunTurnServers } from '/imports/utils/fetchStunTurnServers';
 import PropTypes from 'prop-types';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import logger from '/imports/startup/client/logger';
@@ -611,12 +608,9 @@ class VideoProvider extends Component {
       logger.error({
         logCode: 'video_provider_fetchstunturninfo_error',
         extraInfo: {
-          errorCode: error.code,
-          errorMessage: error.message,
+          error,
         },
       }, 'video-provider failed to fetch STUN/TURN info, using default');
-      // Use fallback STUN server
-      iceServers = getMappedFallbackStun();
     } finally {
       const { constraints, bitrate, id: profileId } = VideoProvider.getCameraProfile();
       this.outboundIceQueues[id] = [];

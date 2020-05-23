@@ -1,6 +1,6 @@
 import Auth from '/imports/ui/services/auth';
 import BridgeService from './service';
-import { fetchWebRTCMappedStunTurnServers, getMappedFallbackStun } from '/imports/utils/fetchStunTurnServers';
+import { fetchWebRTCMappedStunTurnServers } from '/imports/utils/fetchStunTurnServers';
 import playAndRetry from '/imports/utils/mediaElementPlayRetry';
 import logger from '/imports/startup/client/logger';
 
@@ -8,8 +8,8 @@ const SFU_CONFIG = Meteor.settings.public.kurento;
 const SFU_URL = SFU_CONFIG.wsUrl;
 const CHROME_DEFAULT_EXTENSION_KEY = SFU_CONFIG.chromeDefaultExtensionKey;
 const CHROME_CUSTOM_EXTENSION_KEY = SFU_CONFIG.chromeExtensionKey;
-const CHROME_SCREENSHARE_SOURCES = SFU_CONFIG.screenshare.chromeScreenshareSources;
-const FIREFOX_SCREENSHARE_SOURCE = SFU_CONFIG.screenshare.firefoxScreenshareSource;
+const CHROME_SCREENSHARE_SOURCES = SFU_CONFIG.chromeScreenshareSources;
+const FIREFOX_SCREENSHARE_SOURCE = SFU_CONFIG.firefoxScreenshareSource;
 const SCREENSHARE_VIDEO_TAG = 'screenshareVideo';
 
 const CHROME_EXTENSION_KEY = CHROME_CUSTOM_EXTENSION_KEY === 'KEY' ? CHROME_DEFAULT_EXTENSION_KEY : CHROME_CUSTOM_EXTENSION_KEY;
@@ -72,7 +72,6 @@ export default class KurentoScreenshareBridge {
     } catch (error) {
       logger.error({ logCode: 'screenshare_viwer_fetchstunturninfo_error', extraInfo: { error } },
         'Screenshare bridge failed to fetch STUN/TURN info, using default');
-      iceServers = getMappedFallbackStun();
     } finally {
       const options = {
         wsUrl: Auth.authenticateURL(SFU_URL),
@@ -162,15 +161,13 @@ export default class KurentoScreenshareBridge {
     window.kurentoExitVideo();
   }
 
-  async kurentoShareScreen(onFail, stream) {
+  async kurentoShareScreen(onFail) {
     let iceServers = [];
     try {
       iceServers = await fetchWebRTCMappedStunTurnServers(getSessionToken());
     } catch (error) {
       logger.error({ logCode: 'screenshare_presenter_fetchstunturninfo_error' },
-
         'Screenshare bridge failed to fetch STUN/TURN info, using default');
-      iceServers = getMappedFallbackStun();
     } finally {
       const options = {
         wsUrl: Auth.authenticateURL(SFU_URL),
@@ -195,8 +192,6 @@ export default class KurentoScreenshareBridge {
           logCode: 'screenshare_presenter_start_success',
         }, 'Screenshare presenter started succesfully');
       };
-
-      options.stream = stream || undefined;
 
       window.kurentoShareScreen(
         SCREENSHARE_VIDEO_TAG,

@@ -51,7 +51,7 @@ function publishCurrentUser(...args) {
 
 Meteor.publish('current-user', publishCurrentUser);
 
-function users() {
+function users(isModerator = false) {
   if (!this.userId) {
     return Users.find({ meetingId: '' });
   }
@@ -63,13 +63,15 @@ function users() {
     ],
   };
 
-  const User = Users.findOne({ userId: requesterUserId, meetingId }, { fields: { role: 1 } });
-  if (!!User && User.role === ROLE_MODERATOR) {
-    selector.$or.push({
-      'breakoutProps.isBreakoutUser': true,
-      'breakoutProps.parentId': meetingId,
-      connectionStatus: 'online',
-    });
+  if (isModerator) {
+    const User = Users.findOne({ userId: requesterUserId, meetingId });
+    if (!!User && User.role === ROLE_MODERATOR) {
+      selector.$or.push({
+        'breakoutProps.isBreakoutUser': true,
+        'breakoutProps.parentId': meetingId,
+        connectionStatus: 'online',
+      });
+    }
   }
 
   const options = {

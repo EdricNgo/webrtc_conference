@@ -27,7 +27,7 @@ Kurento = function (
   this.internalMeetingId = internalMeetingId;
 
   // Optional parameters are: userName, caleeName, chromeExtension, wsUrl, iceServers,
-  // chromeScreenshareSources, firefoxScreenshareSource, logger, stream
+  // chromeScreenshareSources, firefoxScreenshareSource, logger
 
   Object.assign(this, options);
 
@@ -449,7 +449,6 @@ Kurento.prototype.startScreensharing = function () {
       this.onIceCandidate(candidate, this.SEND_ROLE);
     },
     sendSource: 'desktop',
-    videoStream: this.stream || undefined,
   };
 
   let resolution;
@@ -877,6 +876,11 @@ window.getScreenConstraints = function (sendSource, callback) {
   // Falls back to getDisplayMedia if the browser supports it
   if (hasDisplayMedia) {
     return callback(null, getDisplayMediaConstraints());
+  }
+
+  if (isSafari) {
+    // At this time (version 11.1), Safari doesn't support screenshare.
+    return document.dispatchEvent(new Event('safariScreenshareNotSupported'));
   }
 };
 
