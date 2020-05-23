@@ -18,7 +18,7 @@ public:
     basename: "/html5client"
     askForFeedbackOnLogout: false
     allowUserLookup: false
-    enableNetworkInformation: true
+    enableNetworkInformation: false
     enableLimitOfViewersInWebcam: false
     enableMultipleCameras: false
     enableTalkingIndicator: true
@@ -79,18 +79,13 @@ public:
     connectionTimeout: 60000
     showHelpButton: true
     effectiveConnection:
-    - critical
-    - danger
-    - warning
-    - good
-    badConnection:
-    - critical
-    - danger
-    - warning
+      - critical
+      - danger
+      - warning
   externalVideoPlayer:
     enabled: true
   networkMonitoring:
-    enableNetworkMonitoring: true
+    enableNetworkMonitoring: false
     packetLostThreshold: 10
   kurento:
     wsUrl: wss://meet-dev.vngcloud.vn/bbb-webrtc-sfu
