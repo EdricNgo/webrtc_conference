@@ -1,14 +1,16 @@
 import { Slides, SlidePositions } from '/imports/api/slides';
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 import Logger from '/imports/startup/server/logger';
-import { extractCredentials } from '/imports/api/common/server/helpers';
 
-function slides() {
-  if (!this.userId) {
-    return Slides.find({ meetingId: '' });
-  }
-  const { meetingId, requesterUserId } = extractCredentials(this.userId);
-  Logger.debug(`Publishing Slides for ${meetingId} ${requesterUserId}`);
+function slides(credentials) {
+  const { meetingId, requesterUserId, requesterToken } = credentials;
+
+  check(meetingId, String);
+  check(requesterUserId, String);
+  check(requesterToken, String);
+
+  Logger.debug(`Publishing Slides for ${meetingId} ${requesterUserId} ${requesterToken}`);
 
   return Slides.find({ meetingId });
 }
@@ -20,13 +22,14 @@ function publish(...args) {
 
 Meteor.publish('slides', publish);
 
-function slidePositions() {
-  if (!this.userId) {
-    return SlidePositions.find({ meetingId: '' });
-  }
-  const { meetingId, requesterUserId } = extractCredentials(this.userId);
+function slidePositions(credentials) {
+  const { meetingId, requesterUserId, requesterToken } = credentials;
 
-  Logger.debug(`Publishing SlidePositions for ${meetingId} ${requesterUserId}`);
+  check(meetingId, String);
+  check(requesterUserId, String);
+  check(requesterToken, String);
+
+  Logger.debug(`Publishing SlidePositions for ${meetingId} ${requesterUserId} ${requesterToken}`);
 
   return SlidePositions.find({ meetingId });
 }

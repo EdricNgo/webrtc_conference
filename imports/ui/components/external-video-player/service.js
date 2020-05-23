@@ -1,8 +1,5 @@
 import Meetings from '/imports/api/meetings';
-import Users from '/imports/api/users';
 import Auth from '/imports/ui/services/auth';
-import Logger from '/imports/startup/client/logger';
-
 import { getStreamer } from '/imports/api/external-videos';
 import { makeCall } from '/imports/ui/services/api';
 
@@ -20,10 +17,13 @@ const stopWatching = () => {
 };
 
 const sendMessage = (event, data) => {
-  const meetingId = Auth.meetingID;
-  const userId = Auth.userID;
+  const streamer = getStreamer(Auth.meetingID);
 
-  makeCall('emitExternalVideoEvent', event, { ...data, meetingId, userId });
+  streamer.emit(event, {
+    ...data,
+    meetingId: Auth.meetingID,
+    userId: Auth.userID,
+  });
 };
 
 const onMessage = (message, func) => {

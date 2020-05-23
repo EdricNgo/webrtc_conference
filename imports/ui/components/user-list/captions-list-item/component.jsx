@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Icon from '/imports/ui/components/icon/component';
 import { Session } from 'meteor/session';
 import { defineMessages, injectIntl, intlShape } from 'react-intl';
-import { styles } from '/imports/ui/components/user-list/user-list-content/styles';
+import { styles } from './styles';
 
 const propTypes = {
   intl: intlShape.isRequired,
@@ -49,7 +49,7 @@ const CaptionsListItem = (props) => {
       role="button"
       tabIndex={tabIndex}
       id={locale.locale}
-      className={styles.listItem}
+      className={styles.captionsListItem}
       onClick={() => handleClickToggleCaptions(locale.locale)}
       aria-label={`${locale.name} ${intl.formatMessage(intlMessages.captionLabel)}`}
     >

@@ -3,14 +3,16 @@ import { check } from 'meteor/check';
 import RedisPubSub from '/imports/startup/server/redis';
 import Logger from '/imports/startup/server/logger';
 import Users from '/imports/api/users';
-import { extractCredentials } from '/imports/api/common/server/helpers';
 
-export default function assignPresenter(userId) { // TODO-- send username from client side
+export default function assignPresenter(credentials, userId) {
   const REDIS_CONFIG = Meteor.settings.private.redis;
   const CHANNEL = REDIS_CONFIG.channels.toAkkaApps;
   const EVENT_NAME = 'AssignPresenterReqMsg';
 
-  const { meetingId, requesterUserId } = extractCredentials(this.userId);
+  const { meetingId, requesterUserId } = credentials;
+
+  check(meetingId, String);
+  check(requesterUserId, String);
   check(userId, String);
 
   const User = Users.findOne({

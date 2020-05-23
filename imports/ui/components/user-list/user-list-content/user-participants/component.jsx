@@ -57,7 +57,6 @@ class UserParticipants extends Component {
     this.rove = this.rove.bind(this);
     this.changeState = this.changeState.bind(this);
     this.getUsers = this.getUsers.bind(this);
-    this.handleClickSelectedUser = this.handleClickSelectedUser.bind(this);
   }
 
   componentDidMount() {
@@ -66,11 +65,6 @@ class UserParticipants extends Component {
       this.refScrollContainer.addEventListener(
         'keydown',
         this.rove,
-      );
-
-      this.refScrollContainer.addEventListener(
-        'click',
-        this.handleClickSelectedUser,
       );
     }
   }
@@ -94,7 +88,6 @@ class UserParticipants extends Component {
 
   componentWillUnmount() {
     this.refScrollContainer.removeEventListener('keydown', this.rove);
-    this.refScrollContainer.removeEventListener('click', this.handleClickSelectedUser);
   }
 
   getScrollContainerRef() {
@@ -139,11 +132,6 @@ class UserParticipants extends Component {
         </div>
       </CSSTransition>
     ));
-  }
-
-  handleClickSelectedUser(event) {
-    const selectedUser = event.path.find(p => p.className && p.className.includes('participantsList'));
-    this.setState({ selectedUser });
   }
 
   rove(event) {

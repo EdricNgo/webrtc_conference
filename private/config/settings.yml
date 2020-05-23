@@ -20,6 +20,7 @@ public:
     allowUserLookup: false
     enableNetworkInformation: false
     enableLimitOfViewersInWebcam: false
+    enableMultipleCameras: false
     enableTalkingIndicator: true
     viewersInWebcam: 8
     ipv4FallbackDomain: ""
@@ -118,10 +119,9 @@ public:
         bitrate: 800
     enableScreensharing: true
     enableVideo: true
-    enableVideoStats: false
     enableVideoMenu: true
     enableListenOnly: true
-    autoShareWebcam: true
+    autoShareWebcam: false
     skipVideoPreview: false
   pingPong:
     clearUsersInSeconds: 180
@@ -173,15 +173,17 @@ public:
   layout:
     autoSwapLayout: true
     hidePresentation: false
+    webcamsDefaultPlacement: "top"
   media:
     stunTurnServersFetchAddress: "/bigbluebutton/api/stuns"
     mediaTag: "#remote-media"
     callTransferTimeout: 5000
     callHangupTimeout: 2000
     callHangupMaximumRetries: 10
-    echoTestNumber: 'echo'
+    echoTestNumber: '9196'
     relayOnlyOnReconnect: false
   presentation:
+    allowDownloadable: true
     defaultPresentationFile: default.pdf
     panZoomThrottle: 32
     uploadEndpoint: "/bigbluebutton/presentation/upload"
@@ -219,8 +221,6 @@ public:
     - extension: .odi
       mime: application/vnd.oasis.opendocument.image
     - extension: .jpg
-      mime: image/jpeg
-    - extension: .jpeg
       mime: image/jpeg
     - extension: .png
       mime: image/png
@@ -347,29 +347,32 @@ private:
     streamerLog: false
   memoryMonitoring:
     stat:
-      enabled: true
+      enabled: false
     leak:
-      enabled: true
+      enabled: false
     heapdump:
-      enabled: true
+      enabled: false
   minBrowserVersions:
     - browser: chrome
-      version: 59
+      version: 72
     - browser: chromeMobileIOS
       version: Infinity
     - browser: firefox
-      version: 52
+      version: 63
     - browser: firefoxMobile
-      version: 52
+      version: 68
     - browser: edge
-      version: 17
+      version: 79
     - browser: ie
       version: Infinity
     - browser: safari
-      version: [11, 1]
+      version: [12, 1]
     - browser: mobileSafari
-      version: [11, 1]
+      version: [12, 1]
     - browser: opera
-      version: 46
+      version: 50
     - browser: electron
       version: [0, 36]
+    - browser: YandexBrowser
+      version: 19
+      

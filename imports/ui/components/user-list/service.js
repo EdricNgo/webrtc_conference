@@ -286,7 +286,8 @@ const isMeetingLocked = (id) => {
     if (lockSettings.disableCam
       || lockSettings.disableMic
       || lockSettings.disablePrivateChat
-      || lockSettings.disablePublicChat) {
+      || lockSettings.disablePublicChat
+      || lockSettings.disableNote) {
       isLocked = true;
     }
   }

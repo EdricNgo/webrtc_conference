@@ -1,15 +1,16 @@
 import RedisPubSub from '/imports/startup/server/redis';
+import Polls from '/imports/api/polls';
 import { check } from 'meteor/check';
-import { extractCredentials } from '/imports/api/common/server/helpers';
 
-export default function startPoll(pollType, pollId, answers) {
+export default function startPoll(credentials, pollType, pollId, answers) {
+  const { meetingId, requesterUserId } = credentials;
   const REDIS_CONFIG = Meteor.settings.private.redis;
   const CHANNEL = REDIS_CONFIG.channels.toAkkaApps;
 
   let EVENT_NAME = 'StartPollReqMsg';
 
-  const { meetingId, requesterUserId } = extractCredentials(this.userId);
-
+  check(meetingId, String);
+  check(requesterUserId, String);
   check(pollId, String);
   check(pollType, String);
 

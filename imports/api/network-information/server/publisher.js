@@ -1,12 +1,11 @@
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 import NetworkInformation from '/imports/api/network-information';
-import { extractCredentials } from '/imports/api/common/server/helpers';
 
-function networkInformation() {
-  if (!this.userId) {
-    return NetworkInformation.find({ meetingId: '' });
-  }
-  const { meetingId } = extractCredentials(this.userId);
+function networkInformation(credentials) {
+  const { meetingId } = credentials;
+
+  check(meetingId, String);
 
   return NetworkInformation.find({
     meetingId,

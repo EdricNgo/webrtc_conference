@@ -1,9 +1,12 @@
+import { check } from 'meteor/check';
 import { UsersTyping } from '/imports/api/group-chat-msg';
 import stopTyping from '../modifiers/stopTyping';
-import { extractCredentials } from '/imports/api/common/server/helpers';
 
-export default function stopUserTyping() {
-  const { meetingId, requesterUserId } = extractCredentials(this.userId);
+export default function stopUserTyping(credentials) {
+  const { meetingId, requesterUserId } = credentials;
+
+  check(meetingId, String);
+  check(requesterUserId, String);
 
   const userTyping = UsersTyping.findOne({
     meetingId,

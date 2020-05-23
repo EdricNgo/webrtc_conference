@@ -11,19 +11,17 @@ import AudioManager from '/imports/ui/services/audio-manager';
 import logger from '/imports/startup/client/logger';
 import Users from '/imports/api/users';
 import { Session } from 'meteor/session';
+import { FormattedMessage } from 'react-intl';
 import IntlStartup from './intl';
 import Meetings, { RecordMeetings } from '../../api/meetings';
 import AppService from '/imports/ui/components/app/service';
 import Breakouts from '/imports/api/breakouts';
 import AudioService from '/imports/ui/components/audio/service';
-import { FormattedMessage } from 'react-intl';
 import { notify } from '/imports/ui/services/notification';
 import deviceInfo from '/imports/utils/deviceInfo';
 import getFromUserSettings from '/imports/ui/services/users-settings';
 
-const CHAT_CONFIG = Meteor.settings.public.chat;
-const CHAT_ENABLED = CHAT_CONFIG.enabled;
-const PUBLIC_CHAT_ID = CHAT_CONFIG.public_id;
+const CHAT_ENABLED = Meteor.settings.public.chat.enabled;
 
 const BREAKOUT_END_NOTIFY_DELAY = 50;
 
@@ -358,7 +356,7 @@ const BaseContainer = withTracker(() => {
     Session.set('openPanel', 'userlist');
     if (CHAT_ENABLED) {
       Session.set('openPanel', 'chat');
-      Session.set('idChatOpen', PUBLIC_CHAT_ID);
+      Session.set('idChatOpen', '');
     }
   } else {
     Session.set('openPanel', '');

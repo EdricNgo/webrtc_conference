@@ -85,8 +85,6 @@ const canIOwnThisPad = (ownerId) => {
   return ownerId !== userID;
 };
 
-const getSpeechRecognitionAPI = () => window.SpeechRecognition || window.webkitSpeechRecognition;
-
 const canIDictateThisPad = (ownerId) => {
   const { userID } = Auth;
   if (!CAPTIONS_CONFIG.enableDictation) return false;
@@ -155,6 +153,8 @@ const formatCaptionsText = (text) => {
 
 const amIModerator = () => Users.findOne({ userId: Auth.userID },
   { fields: { role: 1 } }).role === ROLE_MODERATOR;
+
+const getSpeechRecognitionAPI = () => window.SpeechRecognition || window.webkitSpeechRecognition;
 
 const initSpeechRecognition = (locale) => {
   const SpeechRecognitionAPI = getSpeechRecognitionAPI();

@@ -1,16 +1,16 @@
 import Annotations from '/imports/api/annotations';
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check';
 import Logger from '/imports/startup/server/logger';
-import { extractCredentials } from '/imports/api/common/server/helpers';
 
-function annotations() {
-  if (!this.userId) {
-    return Annotations.find({ meetingId: '' });
-  }
+function annotations(credentials) {
+  const { meetingId, requesterUserId, requesterToken } = credentials;
 
-  const { meetingId, requesterUserId } = extractCredentials(this.userId);
+  check(meetingId, String);
+  check(requesterUserId, String);
+  check(requesterToken, String);
 
-  Logger.debug(`Publishing Annotations for ${meetingId} ${requesterUserId}`);
+  Logger.debug(`Publishing Annotations for ${meetingId} ${requesterUserId} ${requesterToken}`);
 
   return Annotations.find({ meetingId });
 }

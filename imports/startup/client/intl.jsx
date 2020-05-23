@@ -6,16 +6,13 @@ import LoadingScreen from '/imports/ui/components/loading-screen/component';
 
 // currently supported locales.
 import ar from 'react-intl/locale-data/ar';
-import az from 'react-intl/locale-data/az';
 import bg from 'react-intl/locale-data/bg';
-import ca from 'react-intl/locale-data/ca';
 import cs from 'react-intl/locale-data/cs';
 import da from 'react-intl/locale-data/da';
 import de from 'react-intl/locale-data/de';
 import el from 'react-intl/locale-data/el';
 import en from 'react-intl/locale-data/en';
 import es from 'react-intl/locale-data/es';
-import et from 'react-intl/locale-data/et';
 import eu from 'react-intl/locale-data/eu';
 import fa from 'react-intl/locale-data/fa';
 import fi from 'react-intl/locale-data/fi';
@@ -23,26 +20,18 @@ import fr from 'react-intl/locale-data/fr';
 import gl from 'react-intl/locale-data/gl';
 import he from 'react-intl/locale-data/he';
 import hi from 'react-intl/locale-data/hi';
-import hr from 'react-intl/locale-data/hr';
 import hu from 'react-intl/locale-data/hu';
-import hy from 'react-intl/locale-data/hy';
 import id from 'react-intl/locale-data/id';
 import it from 'react-intl/locale-data/it';
 import ja from 'react-intl/locale-data/ja';
-import ka from 'react-intl/locale-data/ka';
 import km from 'react-intl/locale-data/km';
-import kn from 'react-intl/locale-data/kn';
 import ko from 'react-intl/locale-data/ko';
-import lt from 'react-intl/locale-data/lt';
-import lv from 'react-intl/locale-data/lv';
-import nb from 'react-intl/locale-data/nb';
 import nl from 'react-intl/locale-data/nl';
 import pl from 'react-intl/locale-data/pl';
 import pt from 'react-intl/locale-data/pt';
 import ro from 'react-intl/locale-data/ro';
 import ru from 'react-intl/locale-data/ru';
 import sk from 'react-intl/locale-data/sk';
-import sl from 'react-intl/locale-data/sl';
 import sr from 'react-intl/locale-data/sr';
 import sv from 'react-intl/locale-data/sv';
 import th from 'react-intl/locale-data/th';
@@ -54,14 +43,11 @@ import zh from 'react-intl/locale-data/zh';
 
 addLocaleData([
   ...ar,
-  ...az,
   ...bg,
-  ...ca,
   ...cs,
   ...da,
   ...de,
   ...el,
-  ...et,
   ...en,
   ...es,
   ...eu,
@@ -71,26 +57,18 @@ addLocaleData([
   ...gl,
   ...he,
   ...hi,
-  ...hr,
   ...hu,
-  ...hy,
   ...id,
   ...it,
   ...ja,
-  ...ka,
   ...km,
-  ...kn,
   ...ko,
-  ...lt,
-  ...lv,
-  ...nb,
   ...nl,
   ...pl,
   ...pt,
   ...ro,
   ...ru,
   ...sk,
-  ...sl,
   ...sr,
   ...sv,
   ...th,
@@ -123,12 +101,16 @@ class IntlStartup extends Component {
       fetching: false,
     };
 
+    if (RTL_LANGUAGES.includes(props.locale)) {
+      document.body.parentNode.setAttribute('dir', 'rtl');
+    }
+
     this.fetchLocalizedMessages = this.fetchLocalizedMessages.bind(this);
   }
 
   componentWillMount() {
     const { locale } = this.props;
-    this.fetchLocalizedMessages(locale, true);
+    this.fetchLocalizedMessages(locale);
   }
 
   componentWillUpdate(nextProps) {
@@ -142,8 +124,8 @@ class IntlStartup extends Component {
     }
   }
 
-  fetchLocalizedMessages(locale, init = false) {
-    const url = `/html5client/locale?locale=${locale}&init=${init}`;
+  fetchLocalizedMessages(locale) {
+    const url = `/html5client/locale?locale=${locale}`;
 
     this.setState({ fetching: true }, () => {
       fetch(url)
